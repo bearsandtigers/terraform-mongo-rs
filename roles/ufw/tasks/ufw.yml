@@ -1,0 +1,26 @@
+---
+- name: Enable UFW
+  ufw:
+    state: enabled
+- name: Set default INPUT
+  ufw:
+    policy: "{{ ufw_default_input_policy }}"
+    direction: incoming
+- name: Set default OUTPUT
+  ufw:
+    default: "{{ ufw_default_output_policy }}"
+    direction: outgoing
+- name: Set default FORWARD
+  ufw:
+    default: "{{ ufw_default_forward_policy }}"
+    direction: routed
+    
+- name: Set specific rules
+  ufw:
+    rule: "{{ item.rule }}"
+    direction: in
+    port: "{{ item.port }}"
+    from_ip: "{{ item.from_ip }}"
+    comment: "{{ item.comment }}"
+  loop: "{{ ufw_rules }}"
+

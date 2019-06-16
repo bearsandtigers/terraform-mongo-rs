@@ -2,5 +2,5 @@
 - include: install.yml
   tags: install
 - include: config.yml
-   tags: config
+  tags: config
 - meta: flush_handlers

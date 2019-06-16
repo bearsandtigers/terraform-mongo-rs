@@ -3,10 +3,9 @@
   blockinfile:
     path: /etc/mongodb.conf
     block: |
-      replication:
-        oplogSizeMB: "{{ mongodb_replication_oplogsize }}"
-        replSetName:  "{{ mongodb_replication_replset }}"
-        secondaryIndexPrefetch: "{{ mongodb_replication_replindexprefetch }}"
+      replication.oplogSizeMB: "{{ mongodb_replication_oplogsize }}"
+      replication.replSetName:  "{{ mongodb_replication_replset }}"
+      replication.secondaryIndexPrefetch: "{{ mongodb_replication_replindexprefetch }}"
   notify:
     - restart mongo
 - name: Restart Mongo
@@ -32,5 +31,5 @@
     -u "{{ mongodb_user_admin_name }}" \
     -p "{{ mongodb_user_admin_password }}" \
     --eval 'rs.initiate()'  
-  when: '"NoReplicationEnabled" not in rs_status.stdout'
+  when: '"NoReplicationEnabled" in rs_status.stdout'
     

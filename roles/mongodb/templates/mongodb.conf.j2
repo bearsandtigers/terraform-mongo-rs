@@ -6,11 +6,8 @@ net:
       allowInvalidCertificates: true
       mode: requireSSL
       PEMKeyFile: /etc/ssl/mongo.pem
-security:
-   authorization: "enabled"
-   keyFile: /etc/mongo/keyfile
+security.authorization: "enabled"
+security.keyFile: /etc/mongo/keyfile
 setParameter:
    enableLocalhostAuthBypass: true
-   
-replication:
-   replSetName: "{{ mongodb_replication_replset }}"
+

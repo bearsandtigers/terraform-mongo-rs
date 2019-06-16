@@ -4,7 +4,7 @@ mongodb_replication_replset: rp0                  # Enable replication <setname>
 mongodb_replication_replindexprefetch: "all"      # specify index prefetching behavior (if secondary) [none|_id_only|all]
 mongodb_replication_oplogsize: 1024               # specifies a maximum size in megabytes for the replication operation log
 mongodb_package: mongodb
-mongodb_version: "3.6"
+mongodb_version: "1:3.6.3-0ubuntu1.1"
 mongodb_security_authorization: "enabled"
 mongodb_set_parameters: { "enableLocalhostAuthBypass": "true", "authenticationMechanisms": "SCRAM-SHA-1,MONGODB-CR" }
 mongodb_user_admin_name: siteUserAdmin

@@ -1,0 +1,4 @@
+- name: Copy mongodb.conf
+  copy:
+    src: mongodb.conf
+    dest: /etc/mongodb.conf

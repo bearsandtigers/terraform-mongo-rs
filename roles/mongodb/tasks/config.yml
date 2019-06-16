@@ -1,4 +1,27 @@
-- name: Copy mongodb.conf
+- name: Copy mongo.pem
   copy:
-    src: mongodb.conf
+    src: mongo.pem
+    dest: /etc/ssl/mongo.pem
+
+- name: Copy mongodb.conf
+  template:
+    src: mongodb.conf.j2
     dest: /etc/mongodb.conf
+    
+- name: Copy keyfile
+  copy:
+    src: keyfile
+    dest: /etc/mongo/
+    owner: mongodb
+    mode: 0600
+    
+- name: Restart mongo
+  service: 
+    name: mongodb
+    state: restarted
+
+
+    
+
+
+    

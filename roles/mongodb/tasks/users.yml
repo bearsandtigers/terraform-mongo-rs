@@ -1,0 +1,27 @@
+---
+- name: Ensure pymongo is present
+  pip:
+    name: pymongo
+
+- name: Add default admin
+  mongodb_user:
+    database: admin
+    name: "{{ mongodb_user_admin_name }}"
+    password: "{{ mongodb_user_admin_password }}"
+    roles: root,userAdminAnyDatabase,readWriteAnyDatabase
+    state: present
+    ssl: true
+    ssl_cert_reqs: CERT_NONE
+
+- name: Add Mongo users
+  mongodb_user:
+    database: "{{ item.database }}"
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
+    roles: "{{ item.roles }}"
+    state: present
+    ssl: true
+    ssl_cert_reqs: CERT_NONE
+    login_user: "{{ mongodb_user_admin_name }}"
+    login_password: "{{ mongodb_user_admin_password }}"
+  loop: "{{ mongodb_users }}"

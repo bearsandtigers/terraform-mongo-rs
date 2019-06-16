@@ -1,0 +1,36 @@
+---
+- name: Add replica settings
+  blockinfile:
+    path: /etc/mongodb.conf
+    block: |
+      replication:
+        oplogSizeMB: "{{ mongodb_replication_oplogsize }}"
+        replSetName:  "{{ mongodb_replication_replset }}"
+        secondaryIndexPrefetch: "{{ mongodb_replication_replindexprefetch }}"
+  notify:
+    - restart mongo
+- name: Restart Mongo
+  service:
+    name: mongodb
+    state: restarted 
+- wait_for:
+    host: 127.0.0.1
+    port: 27017
+- name: Get status
+  shell: | 
+    mongo  --ssl --sslAllowInvalidCertificates \
+    --authenticationDatabase "admin"  \
+    -u "{{ mongodb_user_admin_name }}" \
+    -p "{{ mongodb_user_admin_password }}" \
+    --eval 'rs.status()'
+  register: rs_status
+- debug: msg="{{ rs_status }}"
+- name: Initialize replicaSet
+  shell: |
+    mongo  --ssl --sslAllowInvalidCertificates \
+    --authenticationDatabase "admin"  \
+    -u "{{ mongodb_user_admin_name }}" \
+    -p "{{ mongodb_user_admin_password }}" \
+    --eval 'rs.initiate()'  
+  when: '"NoReplicationEnabled" not in rs_status.stdout'
+    

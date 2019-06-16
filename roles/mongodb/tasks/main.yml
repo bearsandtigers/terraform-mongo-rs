@@ -3,4 +3,10 @@
   tags: install
 - include: config.yml
   tags: config
+  notify:
+    - restart mongo
+- include: users.yml
+  tags: users
+- include: replica.yml
+  tags: replica
 - meta: flush_handlers

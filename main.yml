@@ -12,6 +12,11 @@
       apt:
         update_cache: yes
         cache_valid_time: 3600
+    - name: Add python tools
+      apt:
+        name:
+          - python-pip 
+          - python-setuptools
     - name: Gathering Facts
       setup:
   roles:

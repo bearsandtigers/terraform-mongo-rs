@@ -1,0 +1,16 @@
+storage:
+   dbPath: /var/lib/mongodb
+net:
+   bindIp: 0.0.0.0
+   ssl:
+      allowInvalidCertificates: true
+      mode: requireSSL
+      PEMKeyFile: /etc/ssl/mongo.pem
+security:
+   authorization: "enabled"
+   keyFile: /etc/mongo/keyfile
+setParameter:
+   enableLocalhostAuthBypass: true
+   
+replication:
+   replSetName: "{{ mongodb_replication_replset }}"

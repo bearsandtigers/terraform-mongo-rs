@@ -1,0 +1,7 @@
+- name: Install Mongo
+  apt: 
+    name: "{{ mongodb_package }}={{ mongodb_version }}"
+    state: present
+    install_recommends: yes
+    update_cache: yes
+  become: yes

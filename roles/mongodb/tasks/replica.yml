@@ -8,6 +8,9 @@
       replication.secondaryIndexPrefetch: "{{ mongodb_replication_replindexprefetch }}"
   notify:
     - restart mongo
+- shell: cat /etc/mongodb.conf
+  register: conf
+- debug: msg="{{ conf }}"
 - name: Restart Mongo
   service:
     name: mongodb
@@ -26,10 +29,6 @@
   when: "'mongo_master' in group_names"
 - debug: msg="{{ rs_status.stdout }}"
   when:  "'mongo_master' in group_names"
-- debug: msg="{{ group_names }}"
-  when: (("'mongo_master' in group_names" and
-         '"NoReplicationEnabled" in rs_status.stdout') or
-         '"NotYetInitialized" in rs_status.stdout')
 - name: Initialize replicaSet
   shell: |
     mongo  --ssl --sslAllowInvalidCertificates \
@@ -37,7 +36,7 @@
     -u "{{ mongodb_user_admin_name }}" \
     -p "{{ mongodb_user_admin_password }}" \
     --eval 'rs.initiate({
-    _id : "{{ mongodb_replication_replset }}1",
+    _id : "{{ mongodb_replication_replset }}",
     members: [
       { _id: 0, host: "{{ hostvars[groups['mongo'][0]].ansible_eth0.ipv4.address }}:27017" },
       { _id: 1, host: "{{ hostvars[groups['mongo'][1]].ansible_eth0.ipv4.address }}:27017" },
@@ -45,7 +44,9 @@
     ]
     })'
   register: rs_initiate
-  when: ("'mongo_master' in group_names") and ('"NoReplicationEnabled" in rs_status.stdout' or '"NotYetInitialized" in rs_status.stdout')
+  when: 
+    - "'mongo_master' in group_names"
+    - ( '"NoReplicationEnabled" in rs_status.stdout' or '"NotYetInitialized" in rs_status.stdout' )
 - debug: msg="{{ rs_initiate.stdout }}"
   when:  "'mongo_master' in group_names"
     

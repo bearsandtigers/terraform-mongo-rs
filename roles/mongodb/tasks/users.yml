@@ -46,7 +46,7 @@
     line: 'security.authorization: enabled'
 - replace:
     path: /etc/mongodb.conf
-    regexp: '(security.keyFile:.*)$'
+    regexp: '.*(security.keyFile:.*)'
     replace: '\1'
 - replace:
     path: /etc/mongodb.conf

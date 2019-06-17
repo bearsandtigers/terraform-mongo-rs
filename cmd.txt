@@ -1,0 +1,6 @@
+ansible-playbook -i hosts --limit tf-test2 main.yml --tags 'install'
+
+mongo --ssl --sslAllowInvalidCertificates
+
+rs.printSlaveReplicationInfo()
+

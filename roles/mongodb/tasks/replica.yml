@@ -23,13 +23,29 @@
     -p "{{ mongodb_user_admin_password }}" \
     --eval 'rs.status()'
   register: rs_status
-- debug: msg="{{ rs_status }}"
+  when: "'mongo_master' in group_names"
+- debug: msg="{{ rs_status.stdout }}"
+  when:  "'mongo_master' in group_names"
+- debug: msg="{{ group_names }}"
+  when: (("'mongo_master' in group_names" and
+         '"NoReplicationEnabled" in rs_status.stdout') or
+         '"NotYetInitialized" in rs_status.stdout')
 - name: Initialize replicaSet
   shell: |
     mongo  --ssl --sslAllowInvalidCertificates \
     --authenticationDatabase "admin"  \
     -u "{{ mongodb_user_admin_name }}" \
     -p "{{ mongodb_user_admin_password }}" \
-    --eval 'rs.initiate()'  
-  when: '"NoReplicationEnabled" in rs_status.stdout'
+    --eval 'rs.initiate({
+    _id : "{{ mongodb_replication_replset }}1",
+    members: [
+      { _id: 0, host: "{{ hostvars[groups['mongo'][0]].ansible_eth0.ipv4.address }}:27017" },
+      { _id: 1, host: "{{ hostvars[groups['mongo'][1]].ansible_eth0.ipv4.address }}:27017" },
+      { _id: 2, host: "{{ hostvars[groups['mongo'][2]].ansible_eth0.ipv4.address }}:27017" }
+    ]
+    })'
+  register: rs_initiate
+  when: ("'mongo_master' in group_names") and ('"NoReplicationEnabled" in rs_status.stdout' or '"NotYetInitialized" in rs_status.stdout')
+- debug: msg="{{ rs_initiate.stdout }}"
+  when:  "'mongo_master' in group_names"
     
